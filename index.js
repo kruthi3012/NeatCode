@@ -46,6 +46,7 @@ app.get('/', function(req,res){
     res.send("WELCOME TO EXPRESS KRUTHI")
 })
 
+//admin roles have to be directly inserted into the USERS array as of now
 app.post('/signup', function(req, res) {
   const {email, password} = req.body;
 
@@ -78,6 +79,24 @@ app.post('/login', function(req, res) {
 
 app.get('/questions', function(req, res) {
     res.json(QUESTIONS)
+})
+
+//only admins can add questions
+app.post('/questions', function(req,res){
+
+    const{userEmail, title, description, testCases} = req.body;
+
+    const isAdmin = USERS.find(user => user.email == userEmail)
+
+    if(isAdmin){
+        QUESTIONS.push({title: title, description: description, testCases: testCases});
+        console.log(QUESTIONS)
+        res.send("Added question successfully")
+    }else{
+        console.log(QUESTIONS)
+        res.status(222).send("only admins can add questions")
+    }
+
 })
 
 app.get("/submissions", function(req, res) {
